@@ -6,4 +6,6 @@
     <string name="detailednews">Detailed News\n</string>
     <string name="news_details">News Details\n</string>
     <string name="website_button">Continue reading\n</string>
+    <string name="login">Login Page\n</string>
+    <string name="registration">Registration Page</string>
 </resources>

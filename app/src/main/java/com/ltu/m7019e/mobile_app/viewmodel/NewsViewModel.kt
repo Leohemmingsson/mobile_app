@@ -11,7 +11,9 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.ltu.m7019e.mobile_app.NewsApplication
 import com.ltu.m7019e.mobile_app.database.NewsRepository
+import com.ltu.m7019e.mobile_app.database.UserRepository
 import com.ltu.m7019e.mobile_app.model.News
+import com.ltu.m7019e.mobile_app.model.User
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
@@ -28,12 +30,15 @@ sealed interface SelectedNewsUiState {
     object Loading : SelectedNewsUiState
 }
 
-class NewsViewModel(private val newsRepository: NewsRepository): ViewModel() {
+class NewsViewModel(private val newsRepository: NewsRepository,
+                    private val userRepository: UserRepository): ViewModel() {
     var newsListUiState: NewsListUiState by mutableStateOf(NewsListUiState.Loading)
         private set
     var selectedNewsUiState: SelectedNewsUiState by mutableStateOf(SelectedNewsUiState.Loading)
         private set
 
+    var loggedIn: Boolean by mutableStateOf(false)
+        private set
     init {
         getTopHeadlines()
     }
@@ -64,6 +69,25 @@ class NewsViewModel(private val newsRepository: NewsRepository): ViewModel() {
         }
     }
 
+    fun login(username: String, password: String) {
+        viewModelScope.launch {
+            val user = userRepository.login(username, password)
+            loggedIn = user != null
+        }
+    }
+
+    fun logout() {
+        loggedIn = false
+    }
+
+    fun registerUser(username: String, password: String, country: String) {
+        val newUser = User(username = username, password = password, country = country)
+        viewModelScope.launch {
+            userRepository.register(newUser)
+        }
+    }
+
+
     fun getNewsById(newsId: Long): News? {
         // Check if the news item with the provided ID exists in the list
         return (newsListUiState as? NewsListUiState.Success)?.multimpleNews?.find { it.id == newsId }
@@ -75,7 +99,8 @@ class NewsViewModel(private val newsRepository: NewsRepository): ViewModel() {
             initializer {
                 val application = (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as NewsApplication)
                 val newsRepository = application.container.newsRepository
-                NewsViewModel(newsRepository = newsRepository)
+                val userRepository = application.container.userRepository
+                NewsViewModel(newsRepository = newsRepository, userRepository = userRepository)
             }
         }
     }

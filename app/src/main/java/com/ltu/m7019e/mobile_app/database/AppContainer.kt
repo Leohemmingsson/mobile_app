@@ -10,6 +10,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 
 interface AppContainer {
+    val userRepository: UserRepository
     val newsRepository: NewsRepository
 }
 
@@ -43,5 +44,9 @@ class DefaultAppContainer(private val context: Context): AppContainer {
 
     override val newsRepository: NewsRepository by lazy {
         NetworkNewsRepository(retrofitService)
+    }
+
+    override val userRepository: UserRepository by lazy {
+        UserRepository(UserDatabase.getDatabase(context).userDao())
     }
 }
