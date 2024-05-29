@@ -31,13 +31,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.ltu.m7019e.mobile_app.ui.theme.screens.NewsDetailScreen
 import com.ltu.m7019e.mobile_app.ui.theme.screens.NewsGridScreen
 import com.ltu.m7019e.mobile_app.viewmodel.NewsViewModel
 
 
 enum class NewsScreen(@StringRes val title: Int) {
     List(title = R.string.app_name),
-    //Detail(title = R.string.movie_details),
+    Detail(title = R.string.news_details),
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -79,7 +80,7 @@ fun NewsAppBar(
                             })
 
                         DropdownMenuItem(text = {
-                            Text(stringResource(R.string.topnews)) // change to otherscrren later
+                            Text(stringResource(R.string.detailednews)) // change to otherscrren later
                         }, onClick = {
                             newsViewModel.getTopHeadlines() // change to otherscrren later
 
@@ -148,10 +149,10 @@ fun TheNewsApp(
                 // MovieListScreen(
                 NewsGridScreen(
                     newsListUiState = newsViewModel.newsListUiState,
-                    onNewsListItemClick  = {//news ->
+                    onNewsListItemClick  = {news ->
 
-//                        newsViewModel.getTopHeadlines(news)
-//                        navController.navigate(MovieDBScreen.Detail.name)
+                        newsViewModel.setSelectedNews(news)
+                        navController.navigate(NewsScreen.Detail.name)
                     },
                     modifier = Modifier
                         .fillMaxSize()
@@ -159,12 +160,12 @@ fun TheNewsApp(
                 )
             }
 
-//            composable(route = MovieDBScreen.Detail.name) {
-//                MovieDetailScreen(
-//                    movieDBViewModel = movieDBViewModel,
-//                    modifier = Modifier
-//                )
-//            }
+            composable(route = NewsScreen.Detail.name) {
+                NewsDetailScreen(
+                    newsUiState = newsViewModel.selectedNewsUiState,
+                    modifier = Modifier
+                )
+            }
 
 
         }

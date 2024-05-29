@@ -35,7 +35,7 @@ class NewsViewModel(private val newsRepository: NewsRepository): ViewModel() {
         private set
 
     init {
-        //getPopularMovies()
+        getTopHeadlines()
     }
 
     fun getTopHeadlines() {
@@ -51,10 +51,7 @@ class NewsViewModel(private val newsRepository: NewsRepository): ViewModel() {
         }
     }
 
-
-
-
-    fun setSelectedMovie(news: News) {
+    fun setSelectedNews(news: News) {
         viewModelScope.launch {
             selectedNewsUiState = SelectedNewsUiState.Loading
             selectedNewsUiState = try {
@@ -65,6 +62,11 @@ class NewsViewModel(private val newsRepository: NewsRepository): ViewModel() {
                 SelectedNewsUiState.Error
             }
         }
+    }
+
+    fun getNewsById(newsId: Long): News? {
+        // Check if the news item with the provided ID exists in the list
+        return (newsListUiState as? NewsListUiState.Success)?.multimpleNews?.find { it.id == newsId }
     }
 
 

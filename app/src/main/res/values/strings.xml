@@ -3,4 +3,6 @@
     <string name="topnews">Top news\n</string>
     <string name="saved_news">Saved categories\n</string>
     <string name="back_button">Back Button</string>
+    <string name="detailednews">Detailed News\n</string>
+    <string name="news_details">News Details\n</string>
 </resources>
