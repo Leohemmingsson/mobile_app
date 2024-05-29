@@ -9,37 +9,12 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface NewsApiService {
-    @GET("top")
+    @GET("top-headlines")
     suspend fun getTopHeadlines (
-        @Query("api_key")
-        apiKey: String = Constants.API_KEY
+        @Query("apiKey")
+        apiKey: String = Constants.API_KEY,
+        @Query("country")
+        country: String ="us"
     ): NewsListResponse
-
-    @GET("{movie_id}")
-    suspend fun getMovieDetails(
-        @Path("movie_id")
-        movie_id: String,
-        @Query("api_key")
-        apiKey: String = Constants.API_KEY
-    ): Movie
-
-    @GET("{movie_id}/reviews")
-    suspend fun getMovieReviews(
-        @Path("movie_id")
-        movie_id: String,
-        @Query("api_key")
-        apiKey: String = Constants.API_KEY
-    ): ReviewListResponse
-
-    @GET("{movie_id}/videos")
-    suspend fun getMovieVideos(
-        @Path("movie_id")
-        movie_id: String,
-        @Query("api_key")
-        apiKey: String = Constants.API_KEY
-    ): MovieVideoListResponse
-
-}
-
 
 }

@@ -10,32 +10,37 @@ import kotlinx.serialization.Serializable
 data class News(
     @PrimaryKey
     @SerialName(value = "id")
-    var id: Long = 0L,
+    var id: Long? = 0L,
 
     @SerialName(value = "source")
-    var source: String = "",
+    var source: Source? = null,
 
     @SerialName(value = "author")
-    var author: String,
+    var author: String? = null,
 
     @SerialName(value = "title")
-    var title: String,
+    var title: String? = null,
 
     @SerialName(value = "description")
-    var description: String,
+    var description: String? = null,
 
     @SerialName(value = "url")
-    var url: String = "",
+    var url: String? = null,
 
     @SerialName(value = "urlToImage")
-    var urlToImage: String = "",
+    var urlToImage: String? = null,
 
-    @SerialName(value = "published_at")
-    var publishedAt: String,
+    @SerialName(value = "publishedAt")
+    var publishedAt: String? = null,
 
     @SerialName(value = "content")
-    var content: String = "",
+    var content: String? = null,
 
-    var isSaved: Boolean = false,
+    var isSaved: Boolean = false
+)
 
+@Serializable
+data class Source(
+    val id: String? = null,
+    val name: String
 )
