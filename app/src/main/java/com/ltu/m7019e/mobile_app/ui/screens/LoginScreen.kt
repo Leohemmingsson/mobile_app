@@ -58,14 +58,19 @@ fun LoginScreen(
             Button(
                 onClick = {
                     // Perform login action
-                    if (username.isNotEmpty() || password.isNotEmpty()) {
+                    if (username.isNotEmpty() && password.isNotEmpty())  {
                         // Call login method from ViewModel
-                        newsViewModel.login(username, password)
-                        // Navigate on successful login
-                        onLoginSuccess()
+                        if(newsViewModel.login(username, password)) {
+                            // Navigate on successful login
+                            onLoginSuccess()
+                        }
+                        else {
+                            // Display error message if login fails
+                            errorMessage = "Wrong username or password."
+                        }
                     } else {
                         // Display error message if fields are empty
-                        errorMessage = "Please enter username and password."
+                        errorMessage = "Please fill in all fields."
                     }
                 },
                 modifier = Modifier

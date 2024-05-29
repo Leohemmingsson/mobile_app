@@ -69,11 +69,15 @@ class NewsViewModel(private val newsRepository: NewsRepository,
         }
     }
 
-    fun login(username: String, password: String) {
+    fun login(username: String, password: String): Boolean {
+        var success = false
         viewModelScope.launch {
-            val user = userRepository.login(username, password)
-            loggedIn = user != null
+            success = userRepository.login(username, password)
+            loggedIn = success
         }
+        return success
+
+
     }
 
     fun logout() {
