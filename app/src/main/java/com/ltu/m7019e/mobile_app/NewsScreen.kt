@@ -17,7 +17,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,8 +30,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.ltu.m7019e.mobile_app.ui.theme.screens.NewsDetailScreen
-import com.ltu.m7019e.mobile_app.ui.theme.screens.NewsGridScreen
+import com.ltu.m7019e.mobile_app.ui.screens.NewsDetailScreen
+import com.ltu.m7019e.mobile_app.ui.screens.NewsGridScreen
 import com.ltu.m7019e.mobile_app.viewmodel.NewsViewModel
 
 

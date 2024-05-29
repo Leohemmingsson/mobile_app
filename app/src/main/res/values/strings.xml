@@ -5,4 +5,5 @@
     <string name="back_button">Back Button</string>
     <string name="detailednews">Detailed News\n</string>
     <string name="news_details">News Details\n</string>
+    <string name="website_button">Continue reading\n</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.ltu.m7019e.mobile_app.ui.theme.screens
+package com.ltu.m7019e.mobile_app.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
