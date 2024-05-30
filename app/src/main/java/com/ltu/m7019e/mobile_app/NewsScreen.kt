@@ -201,11 +201,11 @@ fun TheNewsApp(
             }
 
             composable(route = NewsScreen.Profile.name) {
-                ProfileScreen(navController = navController, onUpdateSuccess = {
+                ProfileScreen(onUpdateSuccess = {
                     navController.navigate(NewsScreen.List.name) {
                         popUpTo(NewsScreen.Profile.name) { inclusive = true }
                     }
-                }, onRegisterClick = {}, newsViewModel = newsViewModel)
+                }, newsViewModel = newsViewModel)
             }
 
             composable(route = NewsScreen.Detail.name) {

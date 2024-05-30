@@ -19,5 +19,8 @@ interface UserDao {
     @Query("SELECT country FROM users WHERE username = :username")
     suspend fun getUserCountryCode(username: String): String
 
+    @Query("UPDATE users SET country = :countryCode, password = :password WHERE username = :username\n")
+    suspend fun updateUser(countryCode: String, username: String, password: String)
+
 
 }

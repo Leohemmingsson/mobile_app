@@ -120,12 +120,13 @@ class NewsViewModel(
         loggedInUser = username
     }
 
-    fun ProfileUser(username: String, password: String, country: String) {
-      TODO()
-    }
 
-    fun getNewsById(newsId: Long): News? {
-        return (newsListUiState as? NewsListUiState.Success)?.multipleNews?.find { it.id == newsId }
+
+    fun updateProfile(password: String, country: String) {
+        val username = loggedInUser
+        viewModelScope.launch {
+            userRepository.updateUser(username = username, password = password, country = country)
+        }
     }
 
     companion object {
