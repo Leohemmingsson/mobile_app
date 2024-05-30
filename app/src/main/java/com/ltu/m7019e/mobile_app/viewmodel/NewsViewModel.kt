@@ -41,15 +41,20 @@ class NewsViewModel(
     var loggedIn: Boolean by mutableStateOf(false)
         private set
 
+    var loggedInUser: String by mutableStateOf("")
+        private set
+
+
     init {
-        getTopHeadlines()
+        getEverything()
     }
+
 
     fun getTopHeadlines() {
         viewModelScope.launch {
             newsListUiState = NewsListUiState.Loading
             newsListUiState = try {
-                NewsListUiState.Success(newsRepository.getTopHeadlines().results)
+                NewsListUiState.Success(newsRepository.getTopHeadlines(getUserCountryCode(loggedInUser)).results)
             } catch (e: IOException) {
                 NewsListUiState.Error
             } catch (e: HttpException) {
@@ -58,6 +63,27 @@ class NewsViewModel(
         }
     }
 
+    private suspend fun getUserCountryCode(username: String): String {
+        try {
+            return userRepository.getUserCountryCode(username)
+        } catch (e: Exception) {
+            return "us"
+        }
+    }
+
+
+    fun getEverything() {
+        viewModelScope.launch {
+            newsListUiState = NewsListUiState.Loading
+            newsListUiState = try {
+                NewsListUiState.Success(newsRepository.getEverything().results)
+            } catch (e: IOException) {
+                NewsListUiState.Error
+            } catch (e: HttpException) {
+                NewsListUiState.Error
+            }
+        }
+    }
     fun setSelectedNews(news: News) {
         selectedNewsUiState = SelectedNewsUiState.Loading
         viewModelScope.launch {
@@ -75,6 +101,7 @@ class NewsViewModel(
         return try {
             val success = userRepository.login(username, password)
             loggedIn = success
+            loggedInUser = username
             success
         } catch (e: Exception) {
             false

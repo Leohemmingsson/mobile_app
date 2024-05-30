@@ -16,5 +16,8 @@ interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUser(user: User)
 
+    @Query("SELECT country FROM users WHERE username = :username")
+    suspend fun getUserCountryCode(username: String): String
+
 
 }

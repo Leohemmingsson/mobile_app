@@ -75,17 +75,17 @@ fun NewsAppBar(
                         expanded = menuExpanded,
                         onDismissRequest = { menuExpanded = false }) {
                         DropdownMenuItem(
-                            text = { Text(stringResource(R.string.topnews)) },
+                            text = { Text(stringResource(R.string.everything)) },
                             onClick = {
-                                newsViewModel.getTopHeadlines()
+                                newsViewModel.getEverything()
 
                                 menuExpanded = false
                             })
 
                         DropdownMenuItem(text = {
-                            Text(stringResource(R.string.detailednews)) // change to otherscrren later
+                            Text(stringResource(R.string.topnews))
                         }, onClick = {
-                            newsViewModel.getTopHeadlines() // change to otherscrren later
+                            newsViewModel.getTopHeadlines()
 
                             menuExpanded = false
                         })

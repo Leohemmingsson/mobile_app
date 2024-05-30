@@ -14,7 +14,17 @@ interface NewsApiService {
         @Query("apiKey")
         apiKey: String = Constants.API_KEY,
         @Query("country")
-        country: String ="us"
+        country: String
+
+    ): NewsListResponse
+
+    @GET("everything")
+    suspend fun getEverything (
+        @Query("apiKey")
+        apiKey: String = Constants.API_KEY,
+        @Query("q")
+        q: String = "language=en"
+
     ): NewsListResponse
 
 }
