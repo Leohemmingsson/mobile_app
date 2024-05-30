@@ -1,9 +1,14 @@
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -17,20 +22,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.ltu.m7019e.mobile_app.utils.countryMap
 import com.ltu.m7019e.mobile_app.viewmodel.NewsViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegistrationScreen(
     navController: NavController,
     onRegistrationSuccess: () -> Unit,
     newsViewModel: NewsViewModel
 ) {
-    // State for username, password, and country
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var country by remember { mutableStateOf("") }
-    // State for error message
+    var selectedCountryName by remember { mutableStateOf("") }
+    var expanded by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
+
+    val countryNames = countryMap.keys.toList()
 
     Surface(color = MaterialTheme.colorScheme.background) {
         Column(
@@ -57,23 +65,47 @@ fun RegistrationScreen(
                     .padding(bottom = 16.dp)
             )
 
-            TextField(
-                value = country,
-                onValueChange = { country = it },
-                label = { Text("Country") },
-                modifier = Modifier.fillMaxWidth()
-            )
+            ExposedDropdownMenuBox(
+                expanded = expanded,
+                onExpandedChange = { expanded = !expanded }
+            ) {
+                TextField(
+                    value = selectedCountryName,
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text("Country") },
+                    trailingIcon = {
+                        ExposedDropdownMenuDefaults.TrailingIcon(
+                            expanded = expanded
+                        )
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .menuAnchor()
+                )
+                ExposedDropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    countryNames.forEach { countryName ->
+                        DropdownMenuItem(
+                            text = { Text(countryName) },
+                            onClick = {
+                                selectedCountryName = countryName
+                                expanded = false
+                            }
+                        )
+                    }
+                }
+            }
 
             Button(
                 onClick = {
-                    // Perform registration action
-                    if (username.isNotEmpty() && password.isNotEmpty() && country.isNotEmpty()) {
-                        // Call register method from ViewModel
-                        newsViewModel.registerUser(username, password, country)
-                        // Navigate on successful registration
+                    if (username.isNotEmpty() && password.isNotEmpty() && selectedCountryName.isNotEmpty()) {
+                        val countryCode = countryMap[selectedCountryName] ?: ""
+                        newsViewModel.registerUser(username, password, countryCode)
                         onRegistrationSuccess()
                     } else {
-                        // Display error message if fields are empty
                         errorMessage = "Please fill in all fields."
                     }
                 },

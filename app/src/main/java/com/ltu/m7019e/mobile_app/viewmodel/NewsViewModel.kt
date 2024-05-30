@@ -117,6 +117,7 @@ class NewsViewModel(
         viewModelScope.launch {
             userRepository.register(newUser)
         }
+        loggedInUser = username
     }
 
     fun getNewsById(newsId: Long): News? {
