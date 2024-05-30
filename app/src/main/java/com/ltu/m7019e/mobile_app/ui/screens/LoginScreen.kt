@@ -1,6 +1,10 @@
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
+package com.ltu.m7019e.mobile_app.ui.screens
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -13,10 +17,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.ltu.m7019e.mobile_app.viewmodel.NewsViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(
@@ -24,13 +30,12 @@ fun LoginScreen(
     onLoginSuccess: () -> Unit,
     onRegisterClick: () -> Unit,
     newsViewModel: NewsViewModel
-
 ) {
-    // State for username and password
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    // State for error message
+
     var errorMessage by remember { mutableStateOf("") }
+    var isLoggingIn by remember { mutableStateOf(false) }
 
     Surface(color = MaterialTheme.colorScheme.background) {
         Column(
@@ -57,22 +62,25 @@ fun LoginScreen(
 
             Button(
                 onClick = {
-                    // Perform login action
-                    if (username.isNotEmpty() && password.isNotEmpty())  {
-                        // Call login method from ViewModel
-                        if(newsViewModel.login(username, password)) {
-                            // Navigate on successful login
-                            onLoginSuccess()
+                    if (username.isNotEmpty() && password.isNotEmpty() && !isLoggingIn) {
+                        isLoggingIn = true
+                        errorMessage = ""
+
+                        // Perform login in a coroutine
+                        CoroutineScope(Dispatchers.Main).launch {
+                            val loginResult = newsViewModel.login(username, password)
+                            isLoggingIn = false
+                            if (loginResult) {
+                                onLoginSuccess()
+                            } else {
+                                errorMessage = "Wrong username or password."
+                            }
                         }
-                        else {
-                            // Display error message if login fails
-                            errorMessage = "Wrong username or password."
-                        }
-                    } else {
-                        // Display error message if fields are empty
+                    } else if (username.isEmpty() || password.isEmpty()) {
                         errorMessage = "Please fill in all fields."
                     }
                 },
+                enabled = !isLoggingIn,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 16.dp)
@@ -80,7 +88,6 @@ fun LoginScreen(
                 Text("Login")
             }
 
-            // Display error message if login fails
             if (errorMessage.isNotEmpty()) {
                 Text(
                     text = errorMessage,
@@ -89,7 +96,6 @@ fun LoginScreen(
                 )
             }
 
-            // Button to navigate to registration screen
             Button(
                 onClick = onRegisterClick,
                 modifier = Modifier

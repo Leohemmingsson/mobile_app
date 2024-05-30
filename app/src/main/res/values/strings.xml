@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">news_app</string>
+    <string name="app_name">News</string>
     <string name="topnews">Top news\n</string>
     <string name="saved_news">Saved categories\n</string>
     <string name="back_button">Back Button</string>

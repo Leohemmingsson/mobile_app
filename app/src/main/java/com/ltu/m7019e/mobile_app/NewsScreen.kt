@@ -1,6 +1,5 @@
 package com.ltu.m7019e.mobile_app
 
-import LoginScreen
 import RegistrationScreen
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,6 +31,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.ltu.m7019e.mobile_app.ui.screens.LoginScreen
 import com.ltu.m7019e.mobile_app.ui.screens.NewsDetailScreen
 import com.ltu.m7019e.mobile_app.ui.screens.NewsGridScreen
 import com.ltu.m7019e.mobile_app.viewmodel.NewsViewModel
@@ -113,7 +113,6 @@ fun NewsAppBar(
                 }
             }
         }
-
     )
 }
 
@@ -159,8 +158,7 @@ fun TheNewsApp(
                 },
                     newsViewModel = newsViewModel
                 )
-
-                }
+            }
 
 
             composable(route = NewsScreen.Registration.name) {
@@ -170,7 +168,7 @@ fun TheNewsApp(
                         popUpTo(NewsScreen.Registration.name) { inclusive = true }
                     }
                 }, newsViewModel = newsViewModel)
-                }
+            }
 
             composable(route = NewsScreen.List.name) {
                 NewsGridScreen(
