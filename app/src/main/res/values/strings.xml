@@ -1,12 +1,12 @@
 <resources>
     <string name="app_name">News</string>
-    <string name="topnews">Top news\n</string>
-    <string name="saved_news">Saved categories\n</string>
+    <string name="topnews">Local news\n</string>
     <string name="back_button">Back Button</string>
     <string name="detailednews">Detailed News\n</string>
     <string name="news_details">News Details\n</string>
     <string name="website_button">Continue reading\n</string>
     <string name="login">Login Page\n</string>
     <string name="registration">Registration Page</string>
-    <string name="everything">Get Everything\n</string>
+    <string name="everything">Global news\n</string>
+    <string name="profile">Profile\n</string>
 </resources>

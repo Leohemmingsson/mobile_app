@@ -18,4 +18,8 @@ class UserRepository(private val userDao: UserDao) {
     suspend fun getUserCountryCode(username: String): String {
         return userDao.getUserCountryCode(username)
     }
+
+    suspend fun updateUser(username: String,password: String, country: String) {
+        userDao.updateUser(country, username, password)
+    }
 }

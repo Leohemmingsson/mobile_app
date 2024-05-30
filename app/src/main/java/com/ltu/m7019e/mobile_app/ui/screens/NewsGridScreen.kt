@@ -1,5 +1,5 @@
 package com.ltu.m7019e.mobile_app.ui.screens
-
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,6 +18,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.ltu.m7019e.mobile_app.model.News
@@ -29,9 +31,16 @@ fun NewsGridScreen(
     onNewsListItemClick: (News) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val configuration = LocalConfiguration.current
+    val columns = if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+        2
+    } else {
+        1
+    }
+
     when (newsListUiState) {
         is NewsListUiState.Success -> {
-            LazyVerticalGrid(columns = GridCells.Fixed(2), modifier = modifier) {
+            LazyVerticalGrid(columns = GridCells.Fixed(columns), modifier = modifier) {
                 items(newsListUiState.multipleNews) { news ->
                     NewsGridItemCard(
                         news = news,
@@ -96,24 +105,44 @@ fun NewsGridItemCard(
 ) {
     Card(
         modifier = modifier
-            .width(184.dp)
-            .height(276.dp),
+            .width(200.dp)
+            .height(250.dp),
         onClick = {
             onNewsListItemClick(news)
         }
     ) {
         Column {
             Box(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(150.dp),
                 contentAlignment = Alignment.Center
             ) {
-                AsyncImage(
-                    model = news.urlToImage,
-                    contentDescription = news.title,
+                if (news.urlToImage.isNullOrEmpty()) {
+                    Text(
+                        text = "No image available",
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                } else {
+                    AsyncImage(
+                        model = news.urlToImage,
+                        contentDescription = news.title,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(150.dp),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+            }
+            news.title?.let {
+                Text(
+                    text = it,
+                    style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier
-                        .width(184.dp)
-                        .height(276.dp),
-                    contentScale = ContentScale.Crop
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    overflow = TextOverflow.Ellipsis
                 )
             }
         }
