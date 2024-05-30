@@ -25,9 +25,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.ltu.m7019e.mobile_app.utils.countryMap
 import com.ltu.m7019e.mobile_app.viewmodel.NewsViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -91,6 +91,7 @@ fun ProfileScreen(
                     onValueChange = {},
                     readOnly = true,
                     label = { Text("New Country") },
+                    visualTransformation = PasswordVisualTransformation(),
                     trailingIcon = {
                         ExposedDropdownMenuDefaults.TrailingIcon(
                             expanded = expanded
