@@ -1,15 +1,20 @@
 package com.ltu.m7019e.mobile_app.ui.screens
+
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -32,21 +37,31 @@ fun NewsGridScreen(
     modifier: Modifier = Modifier
 ) {
     val configuration = LocalConfiguration.current
-    val columns = if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-        2
-    } else {
-        1
-    }
+    val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
 
     when (newsListUiState) {
         is NewsListUiState.Success -> {
-            LazyVerticalGrid(columns = GridCells.Fixed(columns), modifier = modifier) {
-                items(newsListUiState.multipleNews) { news ->
-                    NewsGridItemCard(
-                        news = news,
-                        onNewsListItemClick = onNewsListItemClick,
-                        modifier = Modifier.padding(8.dp)
-                    )
+            if (isPortrait) {
+                LazyVerticalGrid(columns = GridCells.Fixed(2), modifier = modifier) {
+                    items(newsListUiState.multipleNews) { news ->
+                        NewsGridItemCard(
+                            news = news,
+                            onNewsListItemClick = onNewsListItemClick,
+                            modifier = Modifier.padding(8.dp)
+                        )
+                    }
+                }
+            } else {
+                LazyColumn(modifier = modifier) {
+                    items(newsListUiState.multipleNews) { news ->
+                        NewsListItemCard(
+                            news = news,
+                            onNewsListItemClick = onNewsListItemClick,
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .fillMaxWidth()
+                        )
+                    }
                 }
             }
         }
@@ -74,25 +89,6 @@ fun NewsGridScreen(
                 )
             }
         }
-//        is NewsListUiState.NoInternet -> {
-//            Column(
-//                modifier = Modifier.fillMaxSize(),
-//                horizontalAlignment = Alignment.CenterHorizontally,
-//                verticalArrangement = Arrangement.Center
-//            ) {
-//                Icon(
-//                    painter = painterResource(R.drawable.wifi_off_24px),
-//                    contentDescription = "No wifi",
-//                    modifier = Modifier.size(64.dp)
-//                )
-//
-//                Text(
-//                    text = "No Internet Connection!",
-//                    style = MaterialTheme.typography.bodySmall,
-//                    modifier = Modifier.padding(16.dp)
-//                )
-//            }
-//        }
     }
 }
 
@@ -144,6 +140,69 @@ fun NewsGridItemCard(
                         .padding(8.dp),
                     overflow = TextOverflow.Ellipsis
                 )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun NewsListItemCard(
+    news: News,
+    onNewsListItemClick: (News) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(120.dp),
+        onClick = {
+            onNewsListItemClick(news)
+        }
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(120.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .width(100.dp)
+                    .height(120.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                if (news.urlToImage.isNullOrEmpty()) {
+                    Text(
+                        text = "No image available",
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                } else {
+                    AsyncImage(
+                        model = news.urlToImage,
+                        contentDescription = news.title,
+                        modifier = Modifier
+                            .width(100.dp)
+                            .height(120.dp),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+            }
+            Column(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .padding(8.dp)
+            ) {
+                news.title?.let {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
             }
         }
     }
