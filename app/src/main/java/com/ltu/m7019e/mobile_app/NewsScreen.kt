@@ -5,6 +5,7 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.DropdownMenu
@@ -26,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -34,6 +36,7 @@ import androidx.navigation.compose.rememberNavController
 import com.ltu.m7019e.mobile_app.ui.screens.LoginScreen
 import com.ltu.m7019e.mobile_app.ui.screens.NewsDetailScreen
 import com.ltu.m7019e.mobile_app.ui.screens.NewsGridScreen
+import com.ltu.m7019e.mobile_app.ui.screens.ProfileScreen
 import com.ltu.m7019e.mobile_app.viewmodel.NewsViewModel
 
 
@@ -42,6 +45,7 @@ enum class NewsScreen(@StringRes val title: Int) {
     Detail(title = R.string.news_details),
     Login(title = R.string.login),
     Registration(title = R.string.registration),
+    Profile(title = R.string.profile)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -50,6 +54,7 @@ fun NewsAppBar(
     currentScreen: NewsScreen,
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
+    navController: NavController,
     modifier: Modifier = Modifier,
     newsViewModel: NewsViewModel
 ) {
@@ -61,7 +66,18 @@ fun NewsAppBar(
         colors = TopAppBarDefaults.mediumTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ),
+
         actions = {
+            if (currentScreen == NewsScreen.List || currentScreen == NewsScreen.Detail) {
+                IconButton(onClick = {
+                    navController.navigate(NewsScreen.Profile.name)
+                }) {
+                    Icon(
+                        imageVector = Icons.Filled.AccountCircle,
+                        contentDescription = "Profile"
+                    )
+                }
+            }
             if (currentScreen == NewsScreen.List) {
                 IconButton(onClick = {
                     menuExpanded = !menuExpanded
@@ -90,13 +106,13 @@ fun NewsAppBar(
                             menuExpanded = false
                         })
 
-                        DropdownMenuItem(text = {
-                            Text(stringResource(R.string.saved_news)) // change to otherscrren later
+                       /* DropdownMenuItem(text = {
+                            Text(stringResource(R.string.saved_news))
                         }, onClick = {
                             newsViewModel.getTopHeadlines() //change to saved news later
 
                             menuExpanded = false
-                        })
+                        })*/
                     }
 
                 }
@@ -135,6 +151,7 @@ fun TheNewsApp(
                 currentScreen = currentScreen,
                 canNavigateBack = navController.previousBackStackEntry != null,
                 navigateUp = { navController.navigateUp() },
+                navController = navController,
                 newsViewModel = newsViewModel
             )
         }
@@ -181,6 +198,14 @@ fun TheNewsApp(
                         .fillMaxSize()
                         .padding(16.dp)
                 )
+            }
+
+            composable(route = NewsScreen.Profile.name) {
+                ProfileScreen(navController = navController, onUpdateSuccess = {
+                    navController.navigate(NewsScreen.List.name) {
+                        popUpTo(NewsScreen.Profile.name) { inclusive = true }
+                    }
+                }, onRegisterClick = {}, newsViewModel = newsViewModel)
             }
 
             composable(route = NewsScreen.Detail.name) {

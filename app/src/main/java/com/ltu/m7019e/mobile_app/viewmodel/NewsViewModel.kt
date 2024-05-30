@@ -120,6 +120,10 @@ class NewsViewModel(
         loggedInUser = username
     }
 
+    fun ProfileUser(username: String, password: String, country: String) {
+      TODO()
+    }
+
     fun getNewsById(newsId: Long): News? {
         return (newsListUiState as? NewsListUiState.Success)?.multipleNews?.find { it.id == newsId }
     }
