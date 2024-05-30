@@ -71,6 +71,7 @@ fun ProfileScreen(
                 value = newPassword,
                 onValueChange = { newPassword = it },
                 label = { Text("New Password") },
+                visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                 keyboardActions = KeyboardActions(
                     onDone = {
@@ -91,7 +92,6 @@ fun ProfileScreen(
                     onValueChange = {},
                     readOnly = true,
                     label = { Text("New Country") },
-                    visualTransformation = PasswordVisualTransformation(),
                     trailingIcon = {
                         ExposedDropdownMenuDefaults.TrailingIcon(
                             expanded = expanded
