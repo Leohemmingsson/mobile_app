@@ -103,6 +103,13 @@ fun NewsDetailScreen(
                 modifier = Modifier.padding(16.dp)
             )
         }
+
+        else -> {
+            Text(
+                text = "No Internet Connection!",
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(16.dp)
+            )}
     }
 }
 

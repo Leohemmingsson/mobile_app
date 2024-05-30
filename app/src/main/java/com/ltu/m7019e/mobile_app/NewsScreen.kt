@@ -1,5 +1,6 @@
 package com.ltu.m7019e.mobile_app
 
+import RegistrationScreen
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -30,6 +31,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.ltu.m7019e.mobile_app.ui.screens.LoginScreen
 import com.ltu.m7019e.mobile_app.ui.screens.NewsDetailScreen
 import com.ltu.m7019e.mobile_app.ui.screens.NewsGridScreen
 import com.ltu.m7019e.mobile_app.viewmodel.NewsViewModel
@@ -38,6 +40,8 @@ import com.ltu.m7019e.mobile_app.viewmodel.NewsViewModel
 enum class NewsScreen(@StringRes val title: Int) {
     List(title = R.string.app_name),
     Detail(title = R.string.news_details),
+    Login(title = R.string.login),
+    Registration(title = R.string.registration),
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -71,17 +75,17 @@ fun NewsAppBar(
                         expanded = menuExpanded,
                         onDismissRequest = { menuExpanded = false }) {
                         DropdownMenuItem(
-                            text = { Text(stringResource(R.string.topnews)) },
+                            text = { Text(stringResource(R.string.everything)) },
                             onClick = {
-                                newsViewModel.getTopHeadlines()
+                                newsViewModel.getEverything()
 
                                 menuExpanded = false
                             })
 
                         DropdownMenuItem(text = {
-                            Text(stringResource(R.string.detailednews)) // change to otherscrren later
+                            Text(stringResource(R.string.topnews))
                         }, onClick = {
-                            newsViewModel.getTopHeadlines() // change to otherscrren later
+                            newsViewModel.getTopHeadlines()
 
                             menuExpanded = false
                         })
@@ -109,7 +113,6 @@ fun NewsAppBar(
                 }
             }
         }
-
     )
 }
 
@@ -120,13 +123,13 @@ fun TheNewsApp(
 ) {
     val backStackEntry by navController.currentBackStackEntryAsState()
 
-        val currentScreen = NewsScreen.valueOf(
-        backStackEntry?.destination?.route ?: NewsScreen.List.name
+    val currentScreen = NewsScreen.valueOf(
+        backStackEntry?.destination?.route ?: NewsScreen.Login.name
     )
 
-    val newsViewModel : NewsViewModel = viewModel(factory = NewsViewModel.Factory)
+    val newsViewModel: NewsViewModel = viewModel(factory = NewsViewModel.Factory)
 
-    Scaffold (
+    Scaffold(
         topBar = {
             NewsAppBar(
                 currentScreen = currentScreen,
@@ -135,21 +138,42 @@ fun TheNewsApp(
                 newsViewModel = newsViewModel
             )
         }
-    ) {innerPadding ->
+    ) { innerPadding ->
 
         NavHost(
             navController = navController,
-            startDestination = NewsScreen.List.name,
+            startDestination = NewsScreen.Login.name,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
+            composable(route = NewsScreen.Login.name) {
+                LoginScreen(navController = navController, onLoginSuccess = {
+                    // Navigate to top headlines screen after successful login
+                    navController.navigate(NewsScreen.List.name) {
+                        popUpTo(NewsScreen.Login.name) { inclusive = true }
+                    }
+                }, onRegisterClick = {
+                    navController.navigate(NewsScreen.Registration.name)
+                },
+                    newsViewModel = newsViewModel
+                )
+            }
+
+
+            composable(route = NewsScreen.Registration.name) {
+                RegistrationScreen(navController = navController, onRegistrationSuccess = {
+                    // Navigate to top headlines screen after successful registration
+                    navController.navigate(NewsScreen.List.name) {
+                        popUpTo(NewsScreen.Registration.name) { inclusive = true }
+                    }
+                }, newsViewModel = newsViewModel)
+            }
+
             composable(route = NewsScreen.List.name) {
-                // MovieListScreen(
                 NewsGridScreen(
                     newsListUiState = newsViewModel.newsListUiState,
-                    onNewsListItemClick  = {news ->
-
+                    onNewsListItemClick = { news ->
                         newsViewModel.setSelectedNews(news)
                         navController.navigate(NewsScreen.Detail.name)
                     },
@@ -165,8 +189,6 @@ fun TheNewsApp(
                     modifier = Modifier
                 )
             }
-
-
         }
     }
 }
